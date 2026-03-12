@@ -63,6 +63,10 @@ SLogger* slogger_manager_add_logger(SLogger* logger); // adds logger to manager 
 SLogger* slogger_manager_del_logger(SLogger* logger); // removes logger from manager and adjusts capcity where appropriate
 
 
+SLoggerConfig* _slogger_create_config(char* filename, SLogLevel level);
+void _slogger_delete_config(SLoggerConfig* config);
+
+
 
 #endif // SLOGGER_H
 

@@ -2,6 +2,11 @@
 
 SLoggerManager* _slogger_manager;
 
+
+/******************
+ * USER FUNCTIONS *
+ ******************/
+
 // initializes the slogger manager and the base configuration
 // returns 1 on SUCCESS and 0 on FAILURE (instead of true and false)
 int slogger_initialize() {
@@ -9,6 +14,7 @@ int slogger_initialize() {
     if (_slogger_manager == NULL) {
         return 0;
     }
+
     _slogger_manager->size = 0;
     _slogger_manager->capacity = 2;
     _slogger_manager->loggers = (SLogger**) malloc(sizeof(SLogger*) * _slogger_manager->capacity);
@@ -16,12 +22,15 @@ int slogger_initialize() {
         free(_slogger_manager);
         return 0;
     }
+
     _slogger_manager->config = (SLoggerConfig*) malloc(sizeof(SLoggerConfig));
     if (_slogger_manager->config == NULL) {
         free(_slogger_manager->loggers);
         free(_slogger_manager);
         return 0;
     }
+    //_slogger_manager->config->filename = (char*) malloc(sizeof())
+
     return 1;
 }
 
@@ -44,6 +53,49 @@ void slogger_uninitialize() {
     }
 
 }
+
+
+
+/**********************
+ * INTERNAL FUNCTIONS *
+ **********************/
+
+
+
+// creates a new config with filename and level
+// returns config* on SUCCESS or NULL on FAILURE
+SLoggerConfig* _slogger_create_config(char* filename, SLogLevel level) {
+    SLoggerConfig* config = (SLoggerConfig*) malloc(sizeof(SLoggerConfig));
+    if (config == NULL) {
+        return NULL;
+    }
+
+    config->filename = (char*) malloc(sizeof(char) * (strlen(filename) + 1));
+    if (config->filename == NULL) {
+        free(config);
+        return NULL;
+    }
+
+    strncpy(config->filename, filename, strlen(filename));
+    *(config->filename+strlen(filename)) = '\0';
+    config->level = level;
+
+    return config;
+}
+
+// deletes config and frees all it's resources
+void _slogger_delete_config(SLoggerConfig* config) {
+    if (config == NULL) {
+        return;
+    }
+
+    if (config->filename != NULL) {
+        free(config->filename);
+    }
+    free(config);
+}
+
+
 
 /*
 // SLogLevel* gives the ability to say every NULL value stayes unchanged (standards remain for this field)
