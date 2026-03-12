@@ -23,7 +23,7 @@ int slogger_initialize() {
         return 0;
     }
 
-    _slogger_manager->config = (SLoggerConfig*) malloc(sizeof(SLoggerConfig));
+    _slogger_manager->config = _slogger_create_config(stderr, WARNING);
     if (_slogger_manager->config == NULL) {
         free(_slogger_manager->loggers);
         free(_slogger_manager);
@@ -64,20 +64,13 @@ void slogger_uninitialize() {
 
 // creates a new config with filename and level
 // returns config* on SUCCESS or NULL on FAILURE
-SLoggerConfig* _slogger_create_config(char* filename, SLogLevel level) {
+SLoggerConfig* _slogger_create_config(FILE* stream, SLogLevel level) {
     SLoggerConfig* config = (SLoggerConfig*) malloc(sizeof(SLoggerConfig));
     if (config == NULL) {
         return NULL;
     }
 
-    config->filename = (char*) malloc(sizeof(char) * (strlen(filename) + 1));
-    if (config->filename == NULL) {
-        free(config);
-        return NULL;
-    }
-
-    strncpy(config->filename, filename, strlen(filename));
-    *(config->filename+strlen(filename)) = '\0';
+    config->stream = stream;
     config->level = level;
 
     return config;
@@ -85,13 +78,6 @@ SLoggerConfig* _slogger_create_config(char* filename, SLogLevel level) {
 
 // deletes config and frees all it's resources
 void _slogger_delete_config(SLoggerConfig* config) {
-    if (config == NULL) {
-        return;
-    }
-
-    if (config->filename != NULL) {
-        free(config->filename);
-    }
     free(config);
 }
 
