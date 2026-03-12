@@ -9,8 +9,8 @@ TARGETDIR=build/
 STATIC_TARGET=$(TARGETDIR)libslogger.a
 SHARED_TARGET=$(TARGETDIR)libslogger.so
 
-SOURCES=$(SRCDIR)main.c $(SRCDIR)first.c $(SRCDIR)second.c
-OBJECTS=$(OBJDIR)main.o $(OBJDIR)first.o $(OBJDIR)second.o
+SOURCES=$(SRCDIR)main.c
+OBJECTS=$(OBJDIR)main.o
 
 
 ifeq ($(LIBTYPE), shared)

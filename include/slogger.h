@@ -26,7 +26,8 @@ typedef struct SLogger {
 
 typedef struct SLoggerManager {
     SLogger** loggers;
-    size_t count;
+    size_t capacity;
+    size_t size;
     SLoggerConfig* config;
 } SLoggerManager;
 
@@ -38,7 +39,7 @@ extern SLoggerManager* _slogger_manager;
  * USER FUNCTIONS *
  ******************/
 
-void slogger_initialize(); // initializes the slogger manager and the base configuration
+int slogger_initialize(); // initializes the slogger manager and the base configuration
 void slogger_uninitialize(); // deallocates all the loggers and global variables
 
 // SLogLevel* gives the ability to say every NULL value stayes unchanged (standards remain for this field)
@@ -55,6 +56,11 @@ void slogger_logger_config(const char* name, FILE* log, SLogLevel* level);
  * INTERNAL FUNCTIONS *
  **********************/
 
+SLogger* slogger_manager_get_logger_index(size_t index);
+SLogger* slogger_manager_get_logger_name(char* name);
+
+SLogger* slogger_manager_add_logger(SLogger* logger); // adds logger to manager and adjusts capacity if needed
+SLogger* slogger_manager_del_logger(SLogger* logger); // removes logger from manager and adjusts capcity where appropriate
 
 
 
