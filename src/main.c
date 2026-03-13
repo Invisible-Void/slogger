@@ -101,13 +101,13 @@ SLogger* _slogger_manager_add_logger(SLogger* logger) {
     }
 
     // resize capacity if needed
-    if (_slogger_manager->size >= capacity) {
+    if (_slogger_manager->size >= _slogger_manager->capacity) {
         _slogger_manager->capacity *= 2;
         SLogger** loggers = (SLogger**) realloc(_slogger_manager->loggers, sizeof(SLogger*) * _slogger_manager->capacity);
         if (loggers == NULL) {
             // TODO: free logger properly
             free(logger);
-            return NULL
+            return NULL;
         }
         _slogger_manager->loggers = loggers;
     }
@@ -117,6 +117,7 @@ SLogger* _slogger_manager_add_logger(SLogger* logger) {
     *(_slogger_manager->loggers+_slogger_manager->size) = logger;
     _slogger_manager->size += 1;
 
+    return logger;
 }
 
 // removes logger from manager and adjusts capcity where appropriate
@@ -142,6 +143,7 @@ SLogger* _slogger_manager_del_logger(SLogger* logger) {
     _slogger_manager->size -= 1;
     memmove(_slogger_manager->loggers+i, _slogger_manager->loggers+i+1, sizeof(SLogger*) * (_slogger_manager->size - i));
 
+    return logger;
 }
 
 
