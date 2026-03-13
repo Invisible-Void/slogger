@@ -66,6 +66,7 @@ void _slogger_manager_del_logger(SLogger* logger); // removes logger from manage
 SLoggerConfig* _slogger_create_config(FILE* stream, SLogLevel level);
 void _slogger_delete_config(SLoggerConfig* config);
 
+SLogger* _slogger_create_logger(const char* name);
 void _slogger_delete_logger(SLogger* logger);
 
 

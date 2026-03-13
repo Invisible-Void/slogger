@@ -141,6 +141,25 @@ void _slogger_manager_del_logger(SLogger* logger) {
     memmove(_slogger_manager->loggers+i, _slogger_manager->loggers+i+1, sizeof(SLogger*) * (_slogger_manager->size - i));
 }
 
+SLogger* _slogger_create_logger(const char* name) {
+    SLogger* logger = (SLogger*) malloc(sizeof(SLogger));
+    if (logger == NULL) {
+        return NULL;
+    }
+
+    size_t length = strlen(name);
+    logger->name = (char*) malloc(sizeof(char) * (length + 1));
+    if (logger->name == NULL) {
+        free(logger);
+        return NULL;
+    }
+    strncpy(logger->name, name, length);
+    *(logger->name+length) = '\0';
+
+    logger->config = NULL;
+
+    return logger;
+}
 
 void _slogger_delete_logger(SLogger* logger) {
     free(logger->name);
