@@ -132,7 +132,7 @@ void _slogger_manager_del_logger(SLogger* logger) {
 
     size_t i;
     for (i = 0; i < _slogger_manager->size; i++) {
-        SLogger* current_logger = *(_slogger_manager->loggers+(_slogger_manager->size-1));
+        SLogger* current_logger = *(_slogger_manager->loggers+i);
         if (current_logger == logger) {
             _slogger_delete_logger(current_logger);
             break;
