@@ -105,8 +105,7 @@ SLogger* _slogger_manager_add_logger(SLogger* logger) {
         _slogger_manager->capacity *= 2;
         SLogger** loggers = (SLogger**) realloc(_slogger_manager->loggers, sizeof(SLogger*) * _slogger_manager->capacity);
         if (loggers == NULL) {
-            // TODO: free logger properly
-            free(logger);
+            _slogger_delete_logger(logger);
             return NULL;
         }
         _slogger_manager->loggers = loggers;
