@@ -29,7 +29,6 @@ int slogger_initialize() {
         free(_slogger_manager);
         return 0;
     }
-    //_slogger_manager->config->filename = (char*) malloc(sizeof())
 
     return 1;
 }
@@ -52,6 +51,7 @@ void slogger_uninitialize() {
         free(_slogger_manager->loggers);
     }
 
+    free(_slogger_manager);
 }
 
 
@@ -134,9 +134,7 @@ void _slogger_manager_del_logger(SLogger* logger) {
     for (i = 0; i < _slogger_manager->size; i++) {
         SLogger* current_logger = *(_slogger_manager->loggers+(_slogger_manager->size-1));
         if (current_logger == logger) {
-            free(current_logger->name);
-            _slogger_delete_config(current_logger->config);
-            free(current_logger);
+            _slogger_delete_logger(current_logger);
             break;
         }
     }
