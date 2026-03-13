@@ -89,6 +89,21 @@ void _slogger_delete_config(SLoggerConfig* config) {
     free(config);
 }
 
+// adds logger to manager and adjusts capacity if needed
+SLogger* _slogger_manager_add_logger(SLogger* logger) {
+    if (_slogger_manager == NULL) {
+        return NULL;
+    }
+
+}
+
+// removes logger from manager and adjusts capcity where appropriate
+SLogger* _slogger_manager_del_logger(SLogger* logger) {
+    if (_slogger_manager == NULL) {
+        return NULL;
+    }
+
+}
 
 
 /*
@@ -104,8 +119,6 @@ void slogger_logger_config(const char* name, FILE* log, SLogLevel* level);
 SLogger* slogger_manager_get_logger_index(size_t index);
 SLogger* slogger_manager_get_logger_name(char* name);
 
-SLogger* slogger_manager_add_logger(SLogger* logger); // adds logger to manager and adjusts capacity if needed
-SLogger* slogger_manager_del_logger(SLogger* logger); // removes logger from manager and adjusts capcity where appropriate
 */
 
 
