@@ -56,15 +56,17 @@ void slogger_logger_config(const char* name, FILE* log, SLogLevel* level);
  * INTERNAL FUNCTIONS *
  **********************/
 
-SLogger* slogger_manager_get_logger_index(size_t index);
-SLogger* slogger_manager_get_logger_name(char* name);
+SLogger* _slogger_manager_get_logger_index(size_t index);
+SLogger* _slogger_manager_get_logger_name(char* name);
 
-SLogger* slogger_manager_add_logger(SLogger* logger); // adds logger to manager and adjusts capacity if needed
-SLogger* slogger_manager_del_logger(SLogger* logger); // removes logger from manager and adjusts capcity where appropriate
+SLogger* _slogger_manager_add_logger(SLogger* logger); // adds logger to manager and adjusts capacity if needed
+void _slogger_manager_del_logger(SLogger* logger); // removes logger from manager and adjusts capcity where appropriate
 
 
 SLoggerConfig* _slogger_create_config(FILE* stream, SLogLevel level);
 void _slogger_delete_config(SLoggerConfig* config);
+
+void _slogger_delete_logger(SLogger* logger);
 
 
 

@@ -47,7 +47,7 @@ void slogger_uninitialize() {
     // free all the loggers and the logger array
     if (_slogger_manager->loggers != NULL) {
         for (size_t i = 0; i < _slogger_manager->size; i++) {
-            free(_slogger_manager->loggers+i);
+            _slogger_delete_logger(*(_slogger_manager->loggers+i));
         }
         free(_slogger_manager->loggers);
     }
@@ -121,18 +121,18 @@ SLogger* _slogger_manager_add_logger(SLogger* logger) {
 }
 
 // removes logger from manager and adjusts capcity where appropriate
-SLogger* _slogger_manager_del_logger(SLogger* logger) {
+void _slogger_manager_del_logger(SLogger* logger) {
     if (_slogger_manager == NULL) {
-        return NULL;
+        return;
     }
 
     if (_slogger_manager->loggers == NULL) {
-        return NULL;
+        return;
     }
 
     size_t i;
     for (i = 0; i < _slogger_manager->size; i++) {
-        SLogger* current_logger = *(_slogger_manager->loggers+_slogger_manager->size);
+        SLogger* current_logger = *(_slogger_manager->loggers+(_slogger_manager->size-1));
         if (current_logger == logger) {
             free(current_logger->name);
             _slogger_delete_config(current_logger->config);
@@ -142,8 +142,13 @@ SLogger* _slogger_manager_del_logger(SLogger* logger) {
     }
     _slogger_manager->size -= 1;
     memmove(_slogger_manager->loggers+i, _slogger_manager->loggers+i+1, sizeof(SLogger*) * (_slogger_manager->size - i));
+}
 
-    return logger;
+
+void _slogger_delete_logger(SLogger* logger) {
+    free(logger->name);
+    _slogger_delete_config(logger->config);
+    free(logger);
 }
 
 
