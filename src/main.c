@@ -78,6 +78,14 @@ SLoggerConfig* _slogger_create_config(FILE* stream, SLogLevel level) {
 
 // deletes config and frees all it's resources
 void _slogger_delete_config(SLoggerConfig* config) {
+    if (config == NULL) {
+        return;
+    }
+
+    if (config->stream != stdin && config->stream != stdout && config->stream != stderr) {
+        fclose(config->stream);
+    }
+
     free(config);
 }
 
