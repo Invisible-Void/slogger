@@ -42,7 +42,7 @@ void slogger_uninitialize() {
     }
 
     // free the base configuration
-    free(_slogger_manager->config);
+    _slogger_delete_config(_slogger_manager->config);
 
     // free all the loggers and the logger array
     if (_slogger_manager->loggers != NULL) {
