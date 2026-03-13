@@ -76,6 +76,11 @@ SLoggerConfig* _slogger_create_config(FILE* stream, SLogLevel level) {
     return config;
 }
 
+SLoggerConfig* _slogger_clone_config(const SLoggerConfig* config) {
+    // NOTE: passing config->stream could be dangerous because streams are freed multiple times?
+    return _slogger_create_config(config->stream, config->level);
+}
+
 // deletes config and frees all it's resources
 void _slogger_delete_config(SLoggerConfig* config) {
     if (config == NULL) {
@@ -95,6 +100,23 @@ SLogger* _slogger_manager_add_logger(SLogger* logger) {
         return NULL;
     }
 
+    // resize capacity if needed
+    if (_slogger_manager->size >= capacity) {
+        _slogger_manager->capacity *= 2;
+        SLogger** loggers = (SLogger**) realloc(_slogger_manager->loggers, sizeof(SLogger*) * _slogger_manager->capacity);
+        if (loggers == NULL) {
+            // TODO: free logger properly
+            free(logger);
+            return NULL
+        }
+        _slogger_manager->loggers = loggers;
+    }
+
+    // add base config to logger and logger to manager
+    logger->config = _slogger_clone_config(_slogger_manager->config);
+    *(_slogger_manager->loggers+_slogger_manager->size) = logger;
+    _slogger_manager->size += 1;
+
 }
 
 // removes logger from manager and adjusts capcity where appropriate
@@ -102,6 +124,23 @@ SLogger* _slogger_manager_del_logger(SLogger* logger) {
     if (_slogger_manager == NULL) {
         return NULL;
     }
+
+    if (_slogger_manager->loggers == NULL) {
+        return NULL;
+    }
+
+    size_t i;
+    for (i = 0; i < _slogger_manager->size; i++) {
+        SLogger* current_logger = *(_slogger_manager->loggers+_slogger_manager->size);
+        if (current_logger == logger) {
+            free(current_logger->name);
+            _slogger_delete_config(current_logger->config);
+            free(current_logger);
+            break;
+        }
+    }
+    _slogger_manager->size -= 1;
+    memmove(_slogger_manager->loggers+i, _slogger_manager->loggers+i+1, sizeof(SLogger*) * (_slogger_manager->size - i));
 
 }
 
