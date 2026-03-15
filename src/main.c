@@ -130,6 +130,7 @@ void slogger_log(SLogger* logger, SLogLevel level, const char* message) {
 
     char* string_level = _slogger_level_to_string(level);
     fprintf(config->stream, "[%s] (%s) %s", string_level, logger->name, message);
+    fflush(config->stream); // forces instant write
 
 }
 
