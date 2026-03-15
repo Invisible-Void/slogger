@@ -70,6 +70,7 @@ void _slogger_delete_config(SLoggerConfig* config);
 
 SLogger* _slogger_create_logger(const char* name);
 void _slogger_delete_logger(SLogger* logger);
+SLogger* _slogger_get_logger(const char* name);
 
 char* _slogger_level_to_string(SLogLevel level);
 

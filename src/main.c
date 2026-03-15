@@ -54,6 +54,41 @@ void slogger_uninitialize() {
     free(_slogger_manager);
 }
 
+
+// changes slogger base configuration
+/*
+void slogger_base_config(FILE* log, SLogLevel* level) {
+
+}
+*/
+
+// tries to find existing logger or creates a new logger
+// returns NULL if creation of new logger failed
+SLogger* slogger_get_logger(const char* name) {
+    SLogger* logger;
+
+    // try to find logger in manager
+    logger = _slogger_get_logger(name);
+    if (logger != NULL) {
+        return logger;
+    }
+
+    // try to create new logger
+    logger = _slogger_create_logger(name);
+    if (logger != NULL) {
+        return logger;
+    }
+
+    return NULL;
+}
+
+/*
+void slogger_logger_config(const char* name, FILE* log, SLogLevel* level) {
+    
+}
+*/
+
+
 // loggs a message with the help of the configuration of the logger
 void slogger_log(SLogger* logger, SLogLevel level, const char* message) {
     SLoggerConfig* config = logger->config;
@@ -183,6 +218,18 @@ void _slogger_delete_logger(SLogger* logger) {
     free(logger);
 }
 
+SLogger* _slogger_get_logger(const char* name) {
+    for (size_t i = 0; i < _slogger_manager->size; i++) {
+        SLogger* logger = *(_slogger_manager->loggers+i);
+        assert(logger != NULL);
+        assert(logger->name != NULL);
+        if (strcmp(logger->name, name) == 0) {
+            return logger;
+        }
+    }
+    return NULL;
+}
+
 
 char* _slogger_level_to_string(SLogLevel level) {
     switch (level) {
@@ -199,20 +246,6 @@ char* _slogger_level_to_string(SLogLevel level) {
     }
 }
 
-/*
-// SLogLevel* gives the ability to say every NULL value stayes unchanged (standards remain for this field)
-void slogger_base_config(FILE* log, SLogLevel* level); // changes slogger base configuration
-
-void slogger_get_logger(const char* name);
-void slogger_logger_config(const char* name, FILE* log, SLogLevel* level);
-
-
-
-
-SLogger* slogger_manager_get_logger_index(size_t index);
-SLogger* slogger_manager_get_logger_name(char* name);
-
-*/
 
 
 
