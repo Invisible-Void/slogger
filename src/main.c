@@ -61,7 +61,7 @@ void slogger_log(SLogger* logger, SLogLevel level, const char* message) {
     assert(config->stream != NULL);
  
     // no logging if level is beneath the configured log level
-    if (logger->level < level) {
+    if (config->level < level) {
         return;
     }
 
