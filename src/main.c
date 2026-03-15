@@ -54,6 +54,22 @@ void slogger_uninitialize() {
     free(_slogger_manager);
 }
 
+// loggs a message with the help of the configuration of the logger
+void slogger_log(SLogger* logger, SLogLevel level, const char* message) {
+    SLoggerConfig* config = logger->config;
+    assert(config != NULL);
+    assert(config->stream != NULL);
+ 
+    // no logging if level is beneath the configured log level
+    if (logger->level < level) {
+        return;
+    }
+
+    char* string_level = _slogger_level_to_string(level);
+    fprintf(config->stream, "[%s] %s", string_level, message);
+
+}
+
 
 
 /**********************
@@ -167,6 +183,21 @@ void _slogger_delete_logger(SLogger* logger) {
     free(logger);
 }
 
+
+char* _slogger_level_to_string(SLogLevel level) {
+    switch (level) {
+        case DEBUG:
+            return "DEBUG";
+        case INFO:
+            return "INFO";
+        case WARNING:
+            return "WARNING";
+        case ERROR:
+            return "ERROR";
+        default:
+            return "UNKNOWN";
+    }
+}
 
 /*
 // SLogLevel* gives the ability to say every NULL value stayes unchanged (standards remain for this field)

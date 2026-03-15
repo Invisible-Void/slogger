@@ -1,6 +1,7 @@
 #ifndef SLOGGER_H
 #define SLOGGER_H
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -45,10 +46,11 @@ void slogger_uninitialize(); // deallocates all the loggers and global variables
 // SLogLevel* gives the ability to say every NULL value stayes unchanged (standards remain for this field)
 void slogger_base_config(FILE* log, SLogLevel* level); // changes slogger base configuration
 
-void slogger_get_logger(const char* name);
+SLogger* slogger_get_logger(const char* name);
 void slogger_logger_config(const char* name, FILE* log, SLogLevel* level);
 
 
+void slogger_log(SLogger* logger, SLogLevel level, const char* message);
 
 
 
@@ -69,6 +71,7 @@ void _slogger_delete_config(SLoggerConfig* config);
 SLogger* _slogger_create_logger(const char* name);
 void _slogger_delete_logger(SLogger* logger);
 
+char* _slogger_level_to_string(SLogLevel level);
 
 
 #endif // SLOGGER_H
