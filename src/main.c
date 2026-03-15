@@ -96,6 +96,9 @@ void slogger_logger_config(const char* name, FILE* log, SLogLevel* level) {
 
 // loggs a message with the help of the configuration of the logger
 void slogger_log(SLogger* logger, SLogLevel level, const char* message) {
+    assert(logger != NULL);
+    assert(logger->name != NULL);
+
     SLoggerConfig* config = logger->config;
     assert(config != NULL);
     assert(config->stream != NULL);
@@ -106,7 +109,7 @@ void slogger_log(SLogger* logger, SLogLevel level, const char* message) {
     }
 
     char* string_level = _slogger_level_to_string(level);
-    fprintf(config->stream, "[%s] %s", string_level, message);
+    fprintf(config->stream, "[%s] (%s) %s", string_level, logger->name, message);
 
 }
 
