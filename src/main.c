@@ -75,11 +75,16 @@ SLogger* slogger_get_logger(const char* name) {
 
     // try to create new logger
     logger = _slogger_create_logger(name);
-    if (logger != NULL) {
-        return logger;
+    if (logger == NULL) {
+        return NULL;
     }
 
-    return NULL;
+    // try to add logger to manager (which also populates the logger->config)
+    logger = _slogger_manager_add_logger(logger);
+    if (logger == NULL) {
+        return NULL;
+    }
+    return logger;
 }
 
 /*
@@ -96,7 +101,7 @@ void slogger_log(SLogger* logger, SLogLevel level, const char* message) {
     assert(config->stream != NULL);
  
     // no logging if level is beneath the configured log level
-    if (config->level < level) {
+    if (config->level > level) {
         return;
     }
 
