@@ -47,7 +47,7 @@ void slogger_uninitialize(); // deallocates all the loggers and global variables
 void slogger_base_config(FILE* log, SLogLevel* level); // changes slogger base configuration
 
 SLogger* slogger_get_logger(const char* name);
-void slogger_logger_config(const char* name, FILE* log, SLogLevel* level);
+void slogger_logger_config(SLogger* logger, FILE* log, SLogLevel* level);
 
 
 void slogger_log(SLogger* logger, SLogLevel level, const char* message);
@@ -73,6 +73,9 @@ void _slogger_delete_logger(SLogger* logger);
 SLogger* _slogger_get_logger(const char* name);
 
 char* _slogger_level_to_string(SLogLevel level);
+
+int _slogger_stream_used(FILE* stream);
+void _slogger_close_stream(FILE* stream);
 
 
 #endif // SLOGGER_H

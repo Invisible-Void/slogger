@@ -56,11 +56,19 @@ void slogger_uninitialize() {
 
 
 // changes slogger base configuration
-/*
 void slogger_base_config(FILE* log, SLogLevel* level) {
+    assert(_slogger_manager != NULL);
+    assert(_slogger_manager->config != NULL);
 
+    if (log != NULL) {
+        _slogger_close_stream(_slogger_manager->config->stream);
+        _slogger_manager->config->stream = log;
+    }
+
+    if (level != NULL) {
+        _slogger_manager->config->level = *level;
+    }
 }
-*/
 
 // tries to find existing logger or creates a new logger
 // returns NULL if creation of new logger failed
@@ -87,11 +95,23 @@ SLogger* slogger_get_logger(const char* name) {
     return logger;
 }
 
-/*
-void slogger_logger_config(const char* name, FILE* log, SLogLevel* level) {
-    
+
+// change configuration of the given logger
+void slogger_logger_config(SLogger* logger, FILE* log, SLogLevel* level) {
+    if (logger == NULL) {
+        return;
+    }
+    assert(logger->config != NULL);
+
+    if (log != NULL) {
+        _slogger_close_stream(logger->config->stream);
+        logger->config->stream = log;
+    }
+
+    if (level != NULL) {
+        logger->config->level = *level;
+    }
 }
-*/
 
 
 // loggs a message with the help of the configuration of the logger
@@ -140,15 +160,43 @@ SLoggerConfig* _slogger_clone_config(const SLoggerConfig* config) {
     return _slogger_create_config(config->stream, config->level);
 }
 
+
+// returns number of loggers that use the given stream
+int _slogger_stream_used(FILE* stream) {
+    size_t count = 0;
+    for (size_t i = 0; i < _slogger_manager->size; i++) {
+        SLogger* logger = *(_slogger_manager->loggers+i);
+        assert(logger != NULL);
+        assert(logger->config != NULL);
+
+        if (logger->config->stream == stream) {
+            count++;
+        }
+    }
+    return count;
+}
+
+
+// close stream if appropriate
+void _slogger_close_stream(FILE* stream) {
+    if (stream == stdin || stream == stdout || stream == stderr) {
+        return;
+    }
+
+    if (_slogger_stream_used(stream) > 1) {
+        return;
+    }
+
+    fclose(stream);
+}
+
 // deletes config and frees all it's resources
 void _slogger_delete_config(SLoggerConfig* config) {
     if (config == NULL) {
         return;
     }
 
-    if (config->stream != stdin && config->stream != stdout && config->stream != stderr) {
-        fclose(config->stream);
-    }
+    _slogger_close_stream(config->stream);
 
     free(config);
 }
