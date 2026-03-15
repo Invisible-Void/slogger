@@ -34,7 +34,6 @@ int slogger_initialize() {
 }
 
 // deallocates all the loggers and global variables
-// returns 1 on SUCCESS and 0 on FAILURE (instead of true and false)
 void slogger_uninitialize() {
     if (_slogger_manager == NULL) {
         return;
@@ -45,8 +44,8 @@ void slogger_uninitialize() {
 
     // free all the loggers and the logger array
     if (_slogger_manager->loggers != NULL) {
-        for (size_t i = 0; i < _slogger_manager->size; i++) {
-            _slogger_delete_logger(*(_slogger_manager->loggers+i));
+        while (_slogger_manager->size != 0) {
+            _slogger_manager_del_logger(*(_slogger_manager->loggers));
         }
         free(_slogger_manager->loggers);
     }
@@ -104,8 +103,9 @@ void slogger_logger_config(SLogger* logger, FILE* log, SLogLevel* level) {
     assert(logger->config != NULL);
 
     if (log != NULL) {
-        _slogger_close_stream(logger->config->stream);
+        FILE* stream = logger->config->stream;
         logger->config->stream = log;
+        _slogger_close_stream(stream);
     }
 
     if (level != NULL) {
@@ -156,7 +156,6 @@ SLoggerConfig* _slogger_create_config(FILE* stream, SLogLevel level) {
 }
 
 SLoggerConfig* _slogger_clone_config(const SLoggerConfig* config) {
-    // NOTE: passing config->stream could be dangerous because streams are freed multiple times?
     return _slogger_create_config(config->stream, config->level);
 }
 
@@ -183,7 +182,7 @@ void _slogger_close_stream(FILE* stream) {
         return;
     }
 
-    if (_slogger_stream_used(stream) > 1) {
+    if (_slogger_stream_used(stream) > 0) {
         return;
     }
 
