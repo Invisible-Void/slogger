@@ -14,10 +14,10 @@ OBJECTS=$(OBJDIR)main.o
 
 
 ifeq ($(LIBTYPE), shared)
-$(OBJDIR)%.o: $(SRCDIR)%.c
+$(OBJDIR)%.o: $(SRCDIR)%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 else
-$(OBJDIR)%.o: $(SRCDIR)%.c
+$(OBJDIR)%.o: $(SRCDIR)%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 endif
 
@@ -25,12 +25,18 @@ endif
 .PHONY: static shared clean
 
 
-static: $(OBJECTS)
+static: $(OBJECTS) | $(TARGETDIR)
 	ar rcs $(STATIC_TARGET) $^
 
-shared: $(OBJECTS)
+shared: $(OBJECTS) | $(TARGETDIR)
 	$(CC) $(CFLAGS) -shared -o $(SHARED_TARGET) $^
 
+
+$(TARGETDIR):
+	mkdir $(TARGETDIR)
+
+$(OBJDIR):
+	mkdir $(OBJDIR)
 
 clean:
 	-rm $(STATIC_TARGET) $(SHARED_TARGET)
