@@ -52,6 +52,12 @@ void slogger_logger_config(SLogger* logger, FILE* log, SLogLevel* level);
 
 void slogger_log(SLogger* logger, SLogLevel level, const char* message);
 
+// wrapper/shortcuts for slogger_log
+void slogger_log_debug(SLogger* logger, const char* message);
+void slogger_log_info(SLogger* logger, const char* message);
+void slogger_log_warning(SLogger* logger, const char* message);
+void slogger_log_error(SLogger* logger, const char* message);
+
 
 
 /**********************

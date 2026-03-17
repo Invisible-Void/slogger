@@ -29,7 +29,7 @@ static: $(OBJECTS)
 	ar rcs $(STATIC_TARGET) $^
 
 shared: $(OBJECTS)
-	$(CC) $(CFLAGS) -shared $(SHARED_TARGET) $^
+	$(CC) $(CFLAGS) -shared -o $(SHARED_TARGET) $^
 
 
 clean:

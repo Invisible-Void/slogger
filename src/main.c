@@ -134,6 +134,26 @@ void slogger_log(SLogger* logger, SLogLevel level, const char* message) {
 
 }
 
+// logging with debug type shortcut
+void slogger_log_debug(SLogger* logger, const char* message) {
+    slogger_log(logger, DEBUG, message);
+}
+
+// logging with info type shortcut
+void slogger_log_info(SLogger* logger, const char* message) {
+    slogger_log(logger, INFO, message);
+}
+
+// logging with warning type shortcut
+void slogger_log_warning(SLogger* logger, const char* message) {
+    slogger_log(logger, WARNING, message);
+}
+
+// logging with error type shortcut
+void slogger_log_error(SLogger* logger, const char* message) {
+    slogger_log(logger, ERROR, message);
+}
+
 
 
 /**********************
