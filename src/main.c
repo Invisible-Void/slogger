@@ -115,7 +115,8 @@ void slogger_logger_config(SLogger* logger, FILE* log, SLogLevel* level) {
 
 
 // loggs a message with the help of the configuration of the logger
-void slogger_log(SLogger* logger, SLogLevel level, const char* message) {
+void slogger_log(SLogger* logger, SLogLevel level, const char* message, ...) {
+    va_list args;
     assert(logger != NULL);
     assert(logger->name != NULL);
 
@@ -128,9 +129,30 @@ void slogger_log(SLogger* logger, SLogLevel level, const char* message) {
         return;
     }
 
+    int length = 0;
+    char* real_message;
+    va_list args_copy;
+
+    va_start(args, message);
+    va_copy(args_copy, args);
+
+    length = vsnprintf(NULL, 0, message, args_copy);
+    real_message = (char*) malloc(sizeof(char) * (length + 1));
+    if (real_message == NULL) {
+        va_end(args_copy);
+        va_end(args);
+        return;
+    }
+
+    vsnprintf(real_message, length+1, message, args);
+
+    va_end(args_copy);
+    va_end(args);
+
     char* string_level = _slogger_level_to_string(level);
-    fprintf(config->stream, "[%s] (%s) %s", string_level, logger->name, message);
+    fprintf(config->stream, "[%s] (%s) %s", string_level, logger->name, real_message);
     fflush(config->stream); // forces instant write
+    free(real_message);
 
 }
 

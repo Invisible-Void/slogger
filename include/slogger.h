@@ -2,6 +2,7 @@
 #define SLOGGER_H
 
 #include <assert.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,7 +51,7 @@ SLogger* slogger_get_logger(const char* name);
 void slogger_logger_config(SLogger* logger, FILE* log, SLogLevel* level);
 
 
-void slogger_log(SLogger* logger, SLogLevel level, const char* message);
+void slogger_log(SLogger* logger, SLogLevel level, const char* message, ...);
 
 // wrapper/shortcuts for slogger_log
 void slogger_log_debug(SLogger* logger, const char* message);
