@@ -51,10 +51,16 @@ slogger_logger_config(mylogger, stdout, &level); // stdout could be any FILE* st
 
 Logging something
 ```c
-slogger_log(mylogger, WARNING, "Something went wrong!\n");
-// would log [WARNING] (mylogger) Something went wrong!
+slogger_log(mylogger, WARNING, "Something went wrong!"); // would log [WARNING] (mylogger) Something went wrong!
+
+slogger_log_debug(mylogger, "Debug message!"); // shortcut for slogger_log(..., DEBUG, ...);
 ```
 
+
+Log Levels
+```
+DEBUG -> INFO -> WARNING -> ERROR
+```
 
 ## Example
 
@@ -77,8 +83,8 @@ int main() {
     slogger_logger_config(mylogger, log_file, NULL);
 
 
-    slogger_log(mylogger, DEBUG, "This is a debug message\n"); // does not print in current configuration because DEBUG < WARNING
-    slogger_log(mylogger, ERROR, "Some kind of error occured!\n"); // this will be printed in the my.log file because ERROR >= WARNING
+    slogger_log_debug(mylogger, "This is a debug message"); // does not print in current configuration because DEBUG < WARNING
+    slogger_log_error(mylogger, "Some kind of error occured!"); // this will be printed in the my.log file because ERROR >= WARNING
 
 
     slogger_uninitialize(); // frees all internal allocations and closes all used streams
